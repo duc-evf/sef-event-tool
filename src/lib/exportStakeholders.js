@@ -10,12 +10,27 @@ function safeName(str) {
   return (str || 'batch').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function buildComment(colleagueNames, associatedNotes) {
-  const names = (colleagueNames || []).filter(Boolean).join('; ');
-  const notes = (associatedNotes || []).filter(Boolean).join('; ');
-  const base = names ? `Meet ${names} at {event} event.` : '';
-  const noteStr = notes ? ` Note: ${notes}` : '';
-  return base ? `${base}${noteStr}` : '';
+function buildComment(meetings, eventName, fallbackColleagues, orgName) {
+  if (meetings?.length) {
+    return meetings
+      .map(m => {
+        const person = [m.firstName, m.lastName].filter(Boolean).join(' ');
+        const owner = m.owner || '';
+        if (!owner && !person) return '';
+        if (!owner) return person ? `met ${person} at ${eventName}.` : '';
+        if (!person) return `${owner} attended ${eventName}.`;
+        return `${owner} met ${person} at ${eventName}.`;
+      })
+      .filter(Boolean)
+      .join(' ');
+  }
+  // Fallback: no specific contacts, use event-level colleagues + org name
+  if (fallbackColleagues?.length && eventName) {
+    const names = fallbackColleagues.join(', ');
+    const orgSuffix = orgName ? ` and met a person from ${orgName}` : '';
+    return `${names} attended ${eventName}${orgSuffix}.`;
+  }
+  return '';
 }
 
 export function generateStakeholdersXLSX(sessionStakeholders, eventInfo, opts = {}) {
@@ -71,10 +86,7 @@ export function generateStakeholdersXLSX(sessionStakeholders, eventInfo, opts = 
 
   const linkRows = sessionStakeholders.map(s => {
     const isNew = s._status === 'new';
-    const colleagueNames = s._contactColleagues?.length ? s._contactColleagues : colleague;
-    const comment = s._contactNotes?.length || s._contactColleagues?.length
-      ? buildComment(colleagueNames, s._contactNotes || []).replace('{event}', eventName)
-      : '';
+    const comment = buildComment(s._contactMeetings, eventName, colleague, s.org_name);
 
     return {
       'Source Import Key *': isNew ? (s._importKey || '') : '',
