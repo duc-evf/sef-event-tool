@@ -22,7 +22,7 @@ function findDuplicates(contacts) {
   return dupes;
 }
 
-export default function MergedContacts({ contacts, onChange }) {
+export default function MergedContacts({ contacts, onChange, eventInfo }) {
   const [editing, setEditing] = useState(null);
   const duplicates = findDuplicates(contacts);
 
@@ -53,6 +53,7 @@ export default function MergedContacts({ contacts, onChange }) {
           contact={editing}
           onSave={handleSave}
           onCancel={() => setEditing(null)}
+          eventInfo={eventInfo}
         />
       )}
 

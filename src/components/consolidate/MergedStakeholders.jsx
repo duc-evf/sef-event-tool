@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
 import StakeholderCard from '@/components/stakeholders/StakeholderCard';
-import { generateStakeholdersXLSX } from '@/lib/exportStakeholders';
 import { v4 as uuidv4 } from 'uuid';
-import { toast } from 'sonner';
 
 function extractOrgsFromContacts(contacts) {
   const seen = new Map();
@@ -25,16 +21,17 @@ function extractOrgsFromContacts(contacts) {
         sectors: [],
         application_areas: [],
         _status: 'pending',
-        _contactColleagues: [],
-        _contactNotes: [],
+        _contactMeetings: [],
         _roleInProject: 'User',
         _involvement: 'Expressed Interest',
       });
     }
     const org = seen.get(name);
-    if (c.contact_owner && !org._contactColleagues.includes(c.contact_owner))
-      org._contactColleagues.push(c.contact_owner);
-    if (c.associated_note) org._contactNotes.push(c.associated_note);
+    org._contactMeetings.push({
+      owner: c.contact_owner || '',
+      firstName: c.first_name || '',
+      lastName: c.last_name || '',
+    });
   }
   return Array.from(seen.values());
 }
@@ -57,26 +54,14 @@ export default function MergedStakeholders({ contacts, eventInfo, sessionStakeho
   const readyOrgs = orgs.filter(o => o._status === 'new' || o._status === 'existing');
   const pendingCount = orgs.filter(o => o._status === 'pending').length;
 
-  const handleDownload = () => {
-    if (!readyOrgs.length) { toast.error('No stakeholders confirmed yet'); return; }
-    generateStakeholdersXLSX(readyOrgs, eventInfo);
-    toast.success('Download started');
-  };
-
   return (
     <div className="p-6 space-y-5">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">Stakeholders</h2>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {orgs.length} organisation{orgs.length !== 1 ? 's' : ''} from contacts
-            {pendingCount > 0 && <span className="text-amber-700"> · {pendingCount} pending review</span>}
-          </p>
-        </div>
-        <Button onClick={handleDownload} disabled={!readyOrgs.length}>
-          <Download className="w-4 h-4 mr-1.5" />
-          Download SEFMAP Stakeholders XLSX
-        </Button>
+      <div>
+        <h2 className="text-xl font-semibold">Stakeholders</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          {orgs.length} organisation{orgs.length !== 1 ? 's' : ''} from contacts
+          {pendingCount > 0 && <span className="text-amber-700"> · {pendingCount} pending review</span>}
+        </p>
       </div>
 
       {orgs.length === 0 && (

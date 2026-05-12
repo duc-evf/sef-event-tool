@@ -512,6 +512,7 @@ export const EMPTY_CONTACT = {
   lead_status: '',
   stakeholder_type: '',
   engagement_type: [],
+  contact_owner: '',
   associated_note: '',
 };
 

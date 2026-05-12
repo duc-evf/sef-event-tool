@@ -170,9 +170,9 @@ function App() {
           <TabsContent value="contacts">
             <div className="p-6 space-y-4">
               {editingContact ? (
-                <ContactForm key={editingContact.id} contact={editingContact} onSave={handleSaveContact} onCancel={() => setEditingContact(null)} />
+                <ContactForm key={editingContact.id} contact={editingContact} onSave={handleSaveContact} onCancel={() => setEditingContact(null)} eventInfo={eventInfo} />
               ) : (
-                <ContactForm key="new" onSave={handleSaveContact} />
+                <ContactForm key="new" onSave={handleSaveContact} eventInfo={eventInfo} />
               )}
               <ContactTable contacts={contacts} onEdit={setEditingContact} onDelete={handleDeleteContacts} />
             </div>
@@ -191,6 +191,7 @@ function App() {
 
           <TabsContent value="stakeholders">
             <SessionStakeholders
+              contacts={contacts}
               stakeholders={sessionStakeholders}
               onChange={setSessionStakeholders}
               eventInfo={eventInfo}
@@ -236,7 +237,7 @@ function App() {
           </TabsContent>
 
           <TabsContent value="contacts">
-            <MergedContacts contacts={mergedContacts} onChange={setMergedContacts} />
+            <MergedContacts contacts={mergedContacts} onChange={setMergedContacts} eventInfo={mergedEventInfo} />
           </TabsContent>
 
           <TabsContent value="requirements">

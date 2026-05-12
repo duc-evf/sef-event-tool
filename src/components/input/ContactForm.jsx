@@ -7,11 +7,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import MultiSelect from '@/components/shared/MultiSelect';
 import {
   SOURCE_OF_CONTACT_OPTIONS, LEAD_STATUS_OPTIONS,
-  STAKEHOLDER_TYPE_OPTIONS, ENGAGEMENT_TYPE_OPTIONS, EMPTY_CONTACT,
+  STAKEHOLDER_TYPE_OPTIONS, ENGAGEMENT_TYPE_OPTIONS,
+  COLLEAGUE_OPTIONS, EMPTY_CONTACT,
 } from '@/lib/constants';
 
-export default function ContactForm({ contact, onSave, onCancel }) {
-  const [form, setForm] = useState(contact || { ...EMPTY_CONTACT });
+export default function ContactForm({ contact, onSave, onCancel, eventInfo }) {
+  const defaultOwner = (() => {
+    if (contact?.contact_owner) return contact.contact_owner;
+    const cols = Array.isArray(eventInfo?.colleague_name)
+      ? eventInfo.colleague_name
+      : eventInfo?.colleague_name ? [eventInfo.colleague_name] : [];
+    return cols[0] || '';
+  })();
+
+  const [form, setForm] = useState(contact || { ...EMPTY_CONTACT, contact_owner: defaultOwner });
   const [errors, setErrors] = useState({});
 
   const update = (field, value) => {
@@ -43,7 +52,7 @@ export default function ContactForm({ contact, onSave, onCancel }) {
       return;
     }
     onSave({ ...form, id: form.id || crypto.randomUUID() });
-    if (!contact) setForm({ ...EMPTY_CONTACT });
+    if (!contact) setForm({ ...EMPTY_CONTACT, contact_owner: defaultOwner });
   };
 
   const isEditing = !!contact;
@@ -79,6 +88,15 @@ export default function ContactForm({ contact, onSave, onCancel }) {
           <Label>Job Title *</Label>
           <Input value={form.job_title} onChange={(e) => update('job_title', e.target.value)} className={errors.job_title ? 'border-red-500' : ''} />
           {err('job_title')}
+        </div>
+        <div>
+          <Label>Contact Owner</Label>
+          <Select value={form.contact_owner || ''} onValueChange={(v) => update('contact_owner', v)}>
+            <SelectTrigger><SelectValue placeholder="Select colleague..." /></SelectTrigger>
+            <SelectContent>
+              {COLLEAGUE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </div>
         <div>
           <Label>Source of Contact</Label>
