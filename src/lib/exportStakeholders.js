@@ -12,7 +12,7 @@ function safeName(str) {
 
 function buildComment(meetings, eventName, fallbackColleagues, orgName) {
   if (meetings?.length) {
-    return meetings
+    const sentences = meetings
       .map(m => {
         const person = [m.firstName, m.lastName].filter(Boolean).join(' ');
         const owner = m.owner || '';
@@ -23,6 +23,8 @@ function buildComment(meetings, eventName, fallbackColleagues, orgName) {
       })
       .filter(Boolean)
       .join(' ');
+    const notes = meetings.map(m => m.note).filter(Boolean).join('; ');
+    return notes ? `${sentences} Note: ${notes}` : sentences;
   }
   // Fallback: no specific contacts, use event-level colleagues + org name
   if (fallbackColleagues?.length && eventName) {

@@ -31,6 +31,7 @@ function extractOrgsFromContacts(contacts) {
       owner: c.contact_owner || '',
       firstName: c.first_name || '',
       lastName: c.last_name || '',
+      note: c.associated_note || '',
     });
   }
   return Array.from(seen.values());
