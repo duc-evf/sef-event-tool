@@ -57,6 +57,7 @@ export const EVENT_TYPE_OPTIONS = [
   'Workshop',
   'Webinar',
   'Meeting',
+  'Deep dive',
   'Other',
 ];
 
