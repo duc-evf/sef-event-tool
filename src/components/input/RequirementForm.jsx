@@ -16,8 +16,28 @@ import { aiSuggestRequirement } from '@/lib/ai';
 import { getApiKey, getOpenAiKey, getAiProvider } from '@/lib/storage';
 import { cn } from '@/lib/utils';
 
+function buildInitialForm(requirement, eventInfo) {
+  const base = requirement ? { ...requirement } : { ...EMPTY_REQUIREMENT };
+  const year = eventInfo?.event_dates?.start
+    ? new Date(eventInfo.event_dates.start).getFullYear()
+    : new Date().getFullYear();
+  const colleagueName = Array.isArray(eventInfo?.colleague_name)
+    ? eventInfo.colleague_name.join('; ')
+    : (eventInfo?.colleague_name || '');
+  const autoContext = eventInfo?.event_name
+    ? `${eventInfo.event_type || 'Conference'}: ${eventInfo.event_name} ${year}`
+    : '';
+  return {
+    ...base,
+    date_added: base.date_added || eventInfo?.event_dates?.start || '',
+    who_added: base.who_added || colleagueName,
+    context_added: base.context_added || autoContext,
+    weblink: base.weblink || eventInfo?.event_website || '',
+  };
+}
+
 export default function RequirementForm({ requirement, eventInfo, onSave, onCancel }) {
-  const [form, setForm] = useState(requirement || { ...EMPTY_REQUIREMENT });
+  const [form, setForm] = useState(() => buildInitialForm(requirement, eventInfo));
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
   const [aiSuggested, setAiSuggested] = useState({});
@@ -67,7 +87,7 @@ export default function RequirementForm({ requirement, eventInfo, onSave, onCanc
     if (!form.description) return;
     onSave({ ...form, id: form.id || crypto.randomUUID() });
     if (!requirement) {
-      setForm({ ...EMPTY_REQUIREMENT });
+      setForm(buildInitialForm(null, eventInfo));
       setAiSuggested({});
     }
   };
@@ -173,6 +193,44 @@ export default function RequirementForm({ requirement, eventInfo, onSave, onCanc
               value={form.sectors}
               onChange={(v) => update('sectors', v)}
               placeholder="Search sectors..."
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="border rounded-md p-3 bg-muted/30 space-y-3">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Auto-populated fields — editable</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <Label>Date Added</Label>
+            <Input
+              type="date"
+              value={form.date_added}
+              onChange={(e) => update('date_added', e.target.value)}
+            />
+          </div>
+          <div>
+            <Label>Who Added</Label>
+            <Input
+              value={form.who_added}
+              onChange={(e) => update('who_added', e.target.value)}
+            />
+          </div>
+          <div>
+            <Label>Context Added</Label>
+            <Input
+              value={form.context_added}
+              onChange={(e) => update('context_added', e.target.value)}
+              placeholder="e.g. Conference: BIOSPACE25 2025"
+            />
+          </div>
+          <div>
+            <Label>Weblink (URL)</Label>
+            <Input
+              type="url"
+              value={form.weblink}
+              onChange={(e) => update('weblink', e.target.value)}
+              placeholder="https://..."
             />
           </div>
         </div>

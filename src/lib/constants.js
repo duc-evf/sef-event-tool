@@ -531,6 +531,10 @@ export const EMPTY_REQUIREMENT = {
   application_areas: [],
   sectors: [],
   other_remarks: '',
+  date_added: '',
+  who_added: '',
+  context_added: '',
+  weblink: '',
 };
 
 export const EMPTY_EVENT_INFO = {

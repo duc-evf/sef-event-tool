@@ -20,10 +20,10 @@ export function generateSEFMAPXLSX(requirements, eventInfo) {
     'SEF Theme': (r.sef_themes || []).join('; '),
     'Application Area': (r.application_areas || []).join('; '),
     'Sector': (r.sectors || []).join('; '),
-    'Date Added': dateAdded,
+    'Date Added': r.date_added || dateAdded,
     'Who added': r.who_added || (Array.isArray(eventInfo.colleague_name) ? eventInfo.colleague_name.join('; ') : eventInfo.colleague_name),
-    'Context Added': contextAdded,
-    'Weblink (URL)': eventInfo.event_website,
+    'Context Added': r.context_added || contextAdded,
+    'Weblink (URL)': r.weblink || eventInfo.event_website,
     'Other Remarks': r.other_remarks,
   }));
 
