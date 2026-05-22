@@ -95,6 +95,10 @@ export function parseImportFile(arrayBuffer) {
         application_areas: parseArray(cell(row, 'Application Area')),
         sectors: parseArray(cell(row, 'Sector')),
         other_remarks: cell(row, 'Other Remarks'),
+        date_added: cell(row, 'Date Added'),
+        who_added: cell(row, 'Who Added'),
+        context_added: cell(row, 'Context Added'),
+        weblink: cell(row, 'Weblink'),
       });
     });
   }
