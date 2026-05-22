@@ -12,8 +12,6 @@ export function generateSEFMAPXLSX(requirements, eventInfo) {
     'Name of Stakeholder Requirement': r.name,
     'Requirement category': (r.requirement_category || []).join('; '),
     'Stakeholder Requirement Description': r.description,
-    'Stakeholder': r.stakeholder || '',
-    'Stakeholder Group': r.stakeholder_group || '',
     'Stakeholder Priority': r.stakeholder_priority,
     'Timescale of the Priority': r.timescale,
     'Biogeophysical Variables': r.biogeophysical_variables || 'Not specified',
@@ -27,6 +25,8 @@ export function generateSEFMAPXLSX(requirements, eventInfo) {
     'Context Added': r.context_added || contextAdded,
     'Weblink (URL)': r.weblink || eventInfo.event_website,
     'Other Remarks': r.other_remarks,
+    'Stakeholder': r.stakeholder || '',
+    'Stakeholder Group': r.stakeholder_group || '',
   }));
 
   const ws = XLSX.utils.json_to_sheet(rows, { header: SEFMAP_XLSX_HEADERS });

@@ -487,8 +487,6 @@ export const SEFMAP_XLSX_HEADERS = [
   'Name of Stakeholder Requirement',
   'Requirement category',
   'Stakeholder Requirement Description',
-  'Stakeholder',
-  'Stakeholder Group',
   'Stakeholder Priority',
   'Timescale of the Priority',
   'Biogeophysical Variables',
@@ -502,6 +500,8 @@ export const SEFMAP_XLSX_HEADERS = [
   'Context Added',
   'Weblink (URL)',
   'Other Remarks',
+  'Stakeholder',
+  'Stakeholder Group',
 ];
 
 export const EMPTY_CONTACT = {
