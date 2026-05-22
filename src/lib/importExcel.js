@@ -66,19 +66,24 @@ export function parseImportFile(arrayBuffer) {
   }
 
   // --- Requirements sheet ---
+  const REQ_COMPULSORY = ['Description', 'Stakeholder', 'Stakeholder Group'];
   const reqSheet = resolveSheet('Requirements', 2);
   if (reqSheet) {
     const rows = XLSX.utils.sheet_to_json(reqSheet, { defval: '' }).filter(r => !isRowEmpty(r));
     rows.forEach((row, i) => {
       const rowNum = i + 2;
-      const description = cell(row, 'Description');
-      if (!description) {
-        errors.push({ sheet: 'Requirements', row: rowNum, message: `Requirements row ${rowNum}: "Description" is required` });
+      const rowErrors = REQ_COMPULSORY
+        .filter(f => !cell(row, f))
+        .map(f => ({ sheet: 'Requirements', row: rowNum, message: `Requirements row ${rowNum}: "${f}" is required` }));
+      if (rowErrors.length) {
+        errors.push(...rowErrors);
         return;
       }
       requirements.push({
         id: uuidv4(),
-        description,
+        description: cell(row, 'Description'),
+        stakeholder: cell(row, 'Stakeholder'),
+        stakeholder_group: cell(row, 'Stakeholder Group'),
         name: cell(row, 'Name'),
         requirement_category: parseArray(cell(row, 'Requirement Category')),
         stakeholder_priority: cell(row, 'Stakeholder Priority'),

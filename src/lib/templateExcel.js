@@ -94,6 +94,17 @@ function addReadme(wb) {
 
   ws.addRow([]);
 
+  // Stakeholder field guidance
+  addRow('STAKEHOLDER FIELDS (Requirements tab)', null, { section: true });
+  addRow('Stakeholder:', 'Name of the ORGANISATION — not a person. Use the org\'s common name or acronym.\n  ✓ "European Environment Agency"  ✓ "DEFRA"  ✗ "John Smith"', { bold: false });
+  ws.lastRow.getCell(2).alignment = { wrapText: true };
+  ws.lastRow.height = 36;
+  addRow('Stakeholder Group:', 'A specific FUNCTIONAL GROUP of organisations — not a generic category.\n  ✓ "National Statistical Offices"  ✓ "CAP Paying Agencies"  ✓ "River Basin Authorities"  ✗ "Government"  ✗ "NGO"', { bold: false });
+  ws.lastRow.getCell(2).alignment = { wrapText: true };
+  ws.lastRow.height = 36;
+
+  ws.addRow([]);
+
   // Valid values
   addRow('VALID VALUES FOR KEY FIELDS', null, { section: true });
   const valRows = [
@@ -181,6 +192,8 @@ function addRequirementsSheet(wb) {
 
   const cols = [
     ['Description',              SALMON, 55],
+    ['Stakeholder',              SALMON, 30],
+    ['Stakeholder Group',        SALMON, 26],
     ['Name',                     YELLOW, 30],
     ['Requirement Category',     YELLOW, 26],
     ['Stakeholder Priority',     YELLOW, 24],
@@ -203,6 +216,14 @@ function addRequirementsSheet(wb) {
   const hdrRow = ws.addRow(cols.map(([h]) => h));
   hdrRow.height = 20;
   cols.forEach(([, argb], i) => styleHeader(hdrRow.getCell(i + 1), argb));
+
+  // Tooltip notes on Stakeholder and Stakeholder Group headers (cols B and C)
+  hdrRow.getCell(2).note = {
+    texts: [{ text: 'Enter the ORGANISATION name (not a person\'s name).\nExample: "European Environment Agency"\nUse the same format as the Acronym - Local name - English name convention where applicable.' }],
+  };
+  hdrRow.getCell(3).note = {
+    texts: [{ text: 'Enter the TYPE OF ORGANISATION GROUP — not a generic category (e.g. not "Government") but a specific functional group.\nExamples: "National Statistical Offices", "CAP Paying Agencies", "River Basin Authorities"' }],
+  };
 
   const lightArgb = cols.map(([, argb]) =>
     argb === SALMON ? 'FFFFF5F5' :

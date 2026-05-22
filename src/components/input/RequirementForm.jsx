@@ -84,7 +84,7 @@ export default function RequirementForm({ requirement, eventInfo, onSave, onCanc
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.description) return;
+    if (!form.description || !form.stakeholder || !form.stakeholder_group) return;
     onSave({ ...form, id: form.id || crypto.randomUUID() });
     if (!requirement) {
       setForm(buildInitialForm(null, eventInfo));
@@ -117,6 +117,24 @@ export default function RequirementForm({ requirement, eventInfo, onSave, onCanc
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <Label>Stakeholder *</Label>
+          <Input
+            value={form.stakeholder}
+            onChange={(e) => update('stakeholder', e.target.value)}
+            placeholder="Organisation name (e.g. European Environment Agency)"
+            required
+          />
+        </div>
+        <div>
+          <Label>Stakeholder Group *</Label>
+          <Input
+            value={form.stakeholder_group}
+            onChange={(e) => update('stakeholder_group', e.target.value)}
+            placeholder="e.g. National Statistical Offices, CAP Paying Agencies"
+            required
+          />
+        </div>
         <div>
           <Label>Name of Stakeholder Requirement</Label>
           <Input className={cn(aiHighlight('name'))} value={form.name} onChange={(e) => update('name', e.target.value)} />

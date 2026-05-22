@@ -12,6 +12,8 @@ export function generateSEFMAPXLSX(requirements, eventInfo) {
     'Name of Stakeholder Requirement': r.name,
     'Requirement category': (r.requirement_category || []).join('; '),
     'Stakeholder Requirement Description': r.description,
+    'Stakeholder': r.stakeholder || '',
+    'Stakeholder Group': r.stakeholder_group || '',
     'Stakeholder Priority': r.stakeholder_priority,
     'Timescale of the Priority': r.timescale,
     'Biogeophysical Variables': r.biogeophysical_variables || 'Not specified',
