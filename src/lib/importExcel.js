@@ -66,7 +66,7 @@ export function parseImportFile(arrayBuffer) {
   }
 
   // --- Requirements sheet ---
-  const REQ_COMPULSORY = ['Description', 'Stakeholder', 'Stakeholder Group'];
+  const REQ_COMPULSORY = ['Description', 'Stakeholder'];
   const reqSheet = resolveSheet('Requirements', 2);
   if (reqSheet) {
     const rows = XLSX.utils.sheet_to_json(reqSheet, { defval: '' }).filter(r => !isRowEmpty(r));

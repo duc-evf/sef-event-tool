@@ -193,7 +193,7 @@ function addRequirementsSheet(wb) {
   const cols = [
     ['Description',              SALMON, 55],
     ['Stakeholder',              SALMON, 30],
-    ['Stakeholder Group',        SALMON, 26],
+    ['Stakeholder Group',        YELLOW, 26],
     ['Name',                     YELLOW, 30],
     ['Requirement Category',     YELLOW, 26],
     ['Stakeholder Priority',     YELLOW, 24],
